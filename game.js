@@ -1,4 +1,3 @@
-console.log("Hello World");
 function getComputerChoice(){
     var choiceNumber = Math.floor(Math.random() * 3);
     if (choiceNumber === 0){
@@ -51,8 +50,7 @@ function playRound(){
 
 function game(){
     for (var i = 0; i < 5; i++){
-        console.log("Turn " + (i + 1) + ":");
-        console.log(playRound());
+        alert("Turn " + (i + 1) + ": " + playRound());
     }
     if (humanScore > computerScore){
         return "You win!";
@@ -63,4 +61,4 @@ function game(){
     }
 };
 
-console.log(game());
+alert(game());
