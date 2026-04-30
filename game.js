@@ -49,9 +49,10 @@ function playRound(){
 };
 
 function game(){
-    for (var i = 0; i < 5; i++){
+    // Commenting out our loop per the assignment.
+    /* for (var i = 0; i < 5; i++){
         alert("Turn " + (i + 1) + ": " + playRound());
-    }
+    } */
     if (humanScore > computerScore){
         return "You win!";
     } else if (computerScore > humanScore){
