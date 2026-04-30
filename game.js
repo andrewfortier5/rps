@@ -62,4 +62,6 @@ function game(){
     }
 };
 
-alert(game());
+// alert(game());
+
+// Adding event listeners to buttons
