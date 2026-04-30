@@ -1,87 +1,112 @@
-function getComputerChoice() {
+const resultsElement = document.getElementById("result");
+const currentHumanScoreElement = document.getElementById("human-score");
+const currentComputerScoreElement = document.getElementById("computer-score");
+const roundCountElement = document.getElementById("round");
+
+const totalRounds = 5;
+let currentRound = 1;
+let currentHumanScore = 0;
+let currentComputerScore = 0;
+let gameFinished = false;
+
+writeRoundElement();
+
+function writeRoundElement() {
+    roundCountElement.textContent = `Round ${currentRound} of ${totalRounds}`;
+}
+
+function writeScores() {
+    currentHumanScoreElement.textContent = currentHumanScore;
+    currentComputerScoreElement.textContent = currentComputerScore;
+}
+
+function turnOffButtons() {
+    document.getElementById("rock").disabled = true;
+    document.getElementById("paper").disabled = true;
+    document.getElementById("scissors").disabled = true;
+}
+
+function computersTurn() {
     var choiceNumber = Math.floor(Math.random() * 3);
     if (choiceNumber === 0) {
-        console.log('Computer selected rock...');
+        resultsElement.insertAdjacentHTML('beforeend', '<p>Computer selected rock...</p>');
         return "rock";
     } else if (choiceNumber === 1) {
-        console.log('Computer selected paper...');
+        resultsElement.insertAdjacentHTML('beforeend', '<p>Computer selected paper...</p>');
         return "paper";
     } else {
-        console.log('Computer selected scissors...');
+        resultsElement.insertAdjacentHTML('beforeend', '<p>Computer selected scissors...</p>');
         return "scissors";
     }
-};
-/* function getHumanChoice() {
-    // Get rid of the prompt. We will be using buttons instead.
-    // var choice = prompt("Please enter rock, paper, or scissors.");
-    if (humanChoice === null || humanChoice.trim() === "") {
-        return null; // or handle differently
-    }
-    choice = choice.toLowerCase().trim();
-    if (choice === "rock" || choice === "paper" || choice === "scissors") {
-        console.log('Player selected ' + choice + '...');
-        return choice;
+}
+
+function findTheWinner() {
+    if (currentHumanScore > currentComputerScore) {
+        return "Human wins!";
+    } else if (currentComputerScore > currentHumanScore) {
+        return "Human loses.";
     } else {
-        alert("Invalid choice. Please enter rock, paper, or scissors.");
-        return getHumanChoice(); // recursive call to retry
+        return "Nobody won /  tie!";
     }
-}; */
+}
 
-var humanScore = 0;
-var computerScore = 0;
+function performGameRound(humanSelection) {
+    var computerSelection = computersTurn();
 
-// Adding event listeners to buttons
-document.getElementById("rock").addEventListener("click", function () {
-    alert(playRound("rock"));
-    playerSelection = "rock"; // Set playerSelection to "rock"
-});
-document.getElementById("paper").addEventListener("click", function () {
-    alert(playRound("paper"));
-    playerSelection = "paper"; // Set playerSelection to "paper"
-});
-document.getElementById("scissors").addEventListener("click", function () {
-    alert(playRound("scissors"));
-    playerSelection = "scissors"; // Set playerSelection to "scissors"
-});
-// The assignment is trying to dictate our variable names, but we are using humanChoice instead of the suggested playerSelection.
-
-function playRound(humanChoice) {
-    // var humanChoice = getHumanChoice();
-    if (humanChoice === null) {
-        return "Game canceled.";
-    } else {
-        console.log('Player selected ' + humanChoice + '...');
-    }
-    var computerChoice = getComputerChoice();
-    if (humanChoice === computerChoice) {
+    if (humanSelection === computerSelection) {
         return "Tie!";
-    } else if (humanChoice === "rock" && computerChoice === "scissors") {
-        humanScore++;
-        return "You win... Rock beats scissors.";
-    } else if (humanChoice === "paper" && computerChoice === "rock") {
-        humanScore++;
-        return "You win... Paper beats rock.";
-    } else if (humanChoice === "scissors" && computerChoice === "paper") {
-        humanScore++;
-        return "You win... Scissors beats paper.";
+    } else if (humanSelection === "rock" && computerSelection === "scissors") {
+        currentHumanScore++;
+        writeScores();
+        return "Human wins.";
+    } else if (humanSelection === "paper" && computerSelection === "rock") {
+        currentHumanScore++;
+        writeScores();
+        return "Human wins.";
+    } else if (humanSelection === "scissors" && computerSelection === "paper") {
+        currentHumanScore++;
+        writeScores();
+        return "Human wins.";
     } else {
-        computerScore++;
-        return "You lose... " + computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1) + " beats " + humanChoice + ".";
+        currentComputerScore++;
+        writeScores();
+        return "Human loses.";
     }
-};
+}
 
-function game() {
-    // Commenting out our loop per the assignment.
-    /* for (var i = 0; i < 5; i++){
-        alert("Turn " + (i + 1) + ": " + playRound());
-    } */
-    if (humanScore > computerScore) {
-        return "You win!";
-    } else if (computerScore > humanScore) {
-        return "You lose.";
+function processSelections(choice) {
+    if (gameFinished) {
+        return;
+    }
+
+    resultsElement.insertAdjacentHTML('beforeend', `<p>Human selected ${choice}...</p>`);
+    const roundResult = performGameRound(choice);
+    resultsElement.insertAdjacentHTML('beforeend', `<p>${roundResult}</p>`);
+
+    if (currentRound >= totalRounds) {
+        gameFinished = true;
+        turnOffButtons();
+        const whoWon = findTheWinner();
+        resultsElement.insertAdjacentHTML('beforeend', `<p><strong>${whoWon}</strong></p>`);
+        alert(whoWon);
     } else {
-        return "Tie!";
+        currentRound++;
+        writeRoundElement();
     }
-};
+}
 
-// alert(game());
+function buttonLogic() {
+    document.getElementById("rock").addEventListener("click", function () {
+        processSelections("rock");
+    });
+
+    document.getElementById("paper").addEventListener("click", function () {
+        processSelections("paper");
+    });
+
+    document.getElementById("scissors").addEventListener("click", function () {
+        processSelections("scissors");
+    });
+}
+
+buttonLogic();
